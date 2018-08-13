@@ -7,14 +7,17 @@ from django.db.models import Q
 from django.utils.safestring import mark_safe
 import hashlib
 
+
 class CourseCategory(models.Model):
     """课程大类,e.g前端 后端"""
     name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
         return "%s" % self.name
+
     class Meta:
         verbose_name_plural = "01.课程大类"
+
 
 class CourseSubCategory(models.Model):
     """课程子类,e.g python linux"""
@@ -46,17 +49,16 @@ class DegreeCourse(models.Model):
     degreecourse_price_policy = GenericRelation("PricePolicy")
 
     def __str__(self):
-        return  self.name
+        return self.name
 
     class Meta:
         verbose_name_plural = "03.学位课"
 
 
-
 class Teacher(models.Model):
     """讲师 导师表"""
     name = models.CharField(max_length=32)
-    role_choices = ((1, "讲师"),(2, "导师"))
+    role_choices = ((1, "讲师"), (2, "导师"))
     role = models.SmallIntegerField(choices=role_choices, default=1)
     title = models.CharField(max_length=64, verbose_name="职位、职称")
     signature = models.CharField(max_length=255, help_text="导师签名", blank=True, null=True)
@@ -88,7 +90,7 @@ class Course(models.Model):
     name = models.CharField(max_length=128, unique=True)
     course_img = models.CharField(max_length=255)
     sub_category = models.ForeignKey("CourseSubCategory")
-    course_type_choices = ((1, "付费"),(2,"VIP专享"),(3,"学位课程"))
+    course_type_choices = ((1, "付费"), (2, "VIP专享"), (3, "学位课程"))
     course_type = models.SmallIntegerField(choices=course_type_choices)
 
     # 不为空; 学位课的某个模块
@@ -96,13 +98,13 @@ class Course(models.Model):
     degree_course = models.ForeignKey("DegreeCourse", blank=True, null=True, help_text="诺是学位课程,此处关联学位表")
 
     brief = models.TextField(verbose_name="课程概述", max_length=2048)
-    level_choices = ((1, "初级"),(2, "中级"),(3, "高级"))
+    level_choices = ((1, "初级"), (2, "中级"), (3, "高级"))
     level = models.SmallIntegerField(choices=level_choices, default=1)
     pub_date = models.DateField(verbose_name="发布日期", blank=True, null=True)
     period = models.PositiveIntegerField(verbose_name="建议学习爱周期(days)", default=7)
     order = models.IntegerField("课程顺序", help_text="从上一个课程数字往后排")
     attachment_path = models.CharField(max_length=128, verbose_name="课件路径", blank=True, null=True)
-    status_choices = ((1, "上线"),(2, "下线"),(3, "预上线"))
+    status_choices = ((1, "上线"), (2, "下线"), (3, "预上线"))
     status = models.SmallIntegerField(choices=status_choices, default=0)
     template_id = models.SmallIntegerField("前端模板", default=2)
 
@@ -305,14 +307,3 @@ class PricePolicy(models.Model):
 
     def __str__(self):
         return "%s(%s)%s" % (self.content_object, self.get_valid_period_display(), self.price)
-
-
-
-
-
-
-
-
-
-
-

@@ -10,9 +10,9 @@ class DegreeCourseSeriallizer(serializers.Serializer):
     name = serializers.CharField()
     teachers = serializers.CharField(source="teachers.all")
     scholarship = serializers.SerializerMethodField()
-    models = serializers.SerializerMethodField()
+    model = serializers.SerializerMethodField()
 
-    def get_scholship(self, obj):
+    def get_scholarship(self, obj):
         li = []
         for item in obj.scholarship_set.all():
             li.append(item.value)

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
+    'app02.apps.App02Config',
     'rest_framework'
 ]
 
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'api.md.cors.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'luffycity.urls'
@@ -125,5 +127,9 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS':'rest_framework.versioning.URLPathVersioning',
     'VERSION_PARAM': 'version',
     # 'DEFAULT_VERSION': 'v1',
-    'ALLOWED_VERSIONS': ['v1', 'v2']
+    'ALLOWED_VERSIONS': ['v1', 'v2'],
+    'PAGE_SIZE':20,
+    'DEFAULT_PARSER_CLASSES':['rest_framework.parsers.JSONParser']
 }
+
+LUFFY_SHOPPING_CAR = "shopping_car_%s_%s"
