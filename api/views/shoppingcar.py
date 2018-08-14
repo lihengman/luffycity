@@ -196,3 +196,57 @@ class ShoppingCarView(ViewSetMixin, APIView):
         CONN.hset(key, 'default_price_id',policy_id)
         CONN.hset(key, 'price_policy_dict', json.dumps(price_policy_dict))
         return Response({'code': 10000, 'data': '购买成功'})
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        删除购物车中的某个课程
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        response = BaseResponse()
+        try:
+            courseid = request.GET.get('courseid')
+            # key = "shopping_car_%s_%s" %(USER_ID, courseid,)
+            key = settings.LUFFY_SHOPPING_CAR % (request.user.id, courseid)
+            
+            CONN.delete(key)
+            response.data = '删除成功'
+        except Exception as e:
+            response.code = 10006
+            response.error = '删除失败'
+        return Response(response.dict)
+
+    def uptate(self, request, *args, **kwargs):
+        """
+        修改用户选中的价格策略
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        """
+        1.获取课程ID 要写个的价格策略ID
+        2.校验合法性(去redis中)
+        """
+        response = BaseResponse()
+        try:
+            course_id = request.data.get('courseid')
+            policy_id = str(request.data.get('policyid')) if request.data.get('policyid') else None
+            # key = 'shopping_car_%s_%s' %(USER_ID, course_id,)
+            key = settings.LUFFY_SHOPPING_CAR % (request.user.id, course_id,)
+
+            if not CONN.exists(key):
+                response.code = 10007
+                response.error = '课程不存在'
+                return Response(response.dict)
+
+            CONN.hset(key, 'default_price_id', policy_id)
+            CONN.expire(key, 20*60)
+            response.data = '修改成功'
+        except Exception as e:
+            response.code = 10009
+            response.error = '修改失败'
+
+        return Response(response.dict)
